@@ -136,10 +136,10 @@
 
         default_layer {
             bindings = <
-&kp Q             &kp W         &kp E      &kp R                       &kp T                                                                     &kp Y        &kp U  &kp I      &kp O    &kp P
-&kp A             &kp S         &kp D      &kp F                       &kp G        &kp LS(LG(S))                  &kp DOUBLE_QUOTES             &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt LEFT_SHIFT Z  &kp X         &kp C      &kp V                       &kp B        &kp ESC                        &kp SEMICOLON                 &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT SLASH
-&kp TAB           &kp LEFT_ALT  &kp LCTRL  &lt_to_layer_0 4 BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 5 LANGUAGE_1    &mt RIGHT_COMMAND LANGUAGE_2  &lt 3 ENTER                             &kp EQUAL
+&kp Q             &kp W         &kp E      &kp R                       &kp T                                                                       &kp Y        &kp U  &kp I      &kp O    &kp P
+&kp A             &kp S         &kp D      &kp F                       &kp G        &kp LS(LG(S))                    &kp DOUBLE_QUOTES             &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt LEFT_SHIFT Z  &kp X         &kp C      &kp V                       &kp B        &kp ESC                          &kp SEMICOLON                 &kp N        &kp M  &kp COMMA  &kp DOT  &mt RIGHT_SHIFT SLASH
+&kp TAB           &kp LEFT_ALT  &kp LCTRL  &lt_to_layer_0 3 BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 5 LANGUAGE_1      &mt RIGHT_COMMAND LANGUAGE_2  &lt 2 ENTER                             &kp EQUAL
             >;
 
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
@@ -158,10 +158,10 @@
 
         NUM {
             bindings = <
-&kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp PLUS                                                 &kp CARET         &kp AMPERSAND      &kp TILDE       &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
-&kp SLASH                   &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp ASTERISK  &kp LC(LA(KP_NUMBER_0))    &kp UNDERSCORE  &kp EXCLAMATION   &kp AT_SIGN        &kp HASH        &kp DOLLAR            &kp PERCENT
-&mt LEFT_SHIFT KP_NUMBER_0  &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp PERIOD    &kp EQUAL                  &trans          &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp LEFT_BRACE  &kp RIGHT_BRACE       &kp BACKSLASH
-&trans                      &kp KP_NUMBER_0  &trans           &trans           &trans        &trans                     &trans          &trans                                                                     &kp PIPE
+&kp MINUS                   &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp PLUS                                                   &kp CARET         &kp AMPERSAND      &kp TILDE       &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
+&kp SLASH                   &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp ASTERISK  &kp LC(LA(KP_NUMBER_0))      &kp UNDERSCORE  &kp EXCLAMATION   &kp AT_SIGN        &kp HASH        &kp DOLLAR            &kp PERCENT
+&mt LEFT_SHIFT KP_NUMBER_0  &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp PERIOD    &kp EQUAL                    &trans          &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp LEFT_BRACE  &kp RIGHT_BRACE       &kp BACKSLASH
+&trans                      &kp KP_NUMBER_0  &trans           &trans           &trans        &trans                       &trans          &trans                                                                     &kp PIPE
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_VOL_DN C_VOL_UP>;
@@ -179,11 +179,11 @@
         };
 
         MOUSE {
-             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &mkp MB3    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &capture  &trans  &mkp MB1  &mo 5       &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &mission  &launchpad  &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans                                  &trans
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                        &trans  &trans    &mkp MB3    &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &capture  &trans  &mkp MB1  &mo 5       &mkp MB2  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans  &mission  &launchpad  &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans                                  &trans
             >;
         };
 
