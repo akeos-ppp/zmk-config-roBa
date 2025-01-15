@@ -3,9 +3,9 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define MOUSE 1
-#define SCROLL 6
-#define NUM 5
+#define MOUSE 4
+#define SCROLL 5
+#define NUM 6
 
 &mt {
     flavor = "balanced";
@@ -176,10 +176,10 @@
 
         MOUSE {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
+&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &mkp MB3    &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &capture  &trans  &mkp MB1  &mo 6       &mkp MB2  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &mission  &launchpad  &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans                                  &trans
             >;
         };
 
