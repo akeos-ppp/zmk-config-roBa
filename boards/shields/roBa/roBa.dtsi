@@ -112,7 +112,14 @@
         triggers-per-rotation = <10>;
     };
 
+    // 元のtrackball_listener（後方互換性のため残す）
     trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+    };
+
+    // MONA2スタイル用のtrackball_central_listener
+    trackball_central_listener: trackball_central_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
     };
@@ -121,7 +128,14 @@
 &spi0 {
     status = "disabled";
 
+    // 元のtrackballノード（後方互換性のため残す）
     trackball: trackball@0 {
+        status = "disabled";
+        reg = <0>;
+    };
+
+    // MONA2スタイル用のtrackball_centralノード
+    trackball_central: trackball_central@0 {
         status = "disabled";
         reg = <0>;
     };
