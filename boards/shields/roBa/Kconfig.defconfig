@@ -1,22 +1,42 @@
 if SHIELD_ROBA_R
-
-config ZMK_KEYBOARD_NAME
-    default "roBa_R"
-
-config ZMK_SPLIT
-    default y
-
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
-
+    config ZMK_KEYBOARD_NAME
+        default "roBa"  # 両側で統一された名前
+    
+    config ZMK_BLE
+        default y
+    
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y  # 右側がセントラル（PCに接続）
 endif
 
-if SHIELD_ROBA_L
-
-config ZMK_KEYBOARD_NAME
-    default "roBa_L"
-
-config ZMK_SPLIT
-    default y
-
+if SHIELD_ROBA_R || SHIELD_ROBA_L
+    # Nordic nRF5x GPIOピン設定
+    config NFCT_PINS_AS_GPIOS
+        default y
+    
+    # 分割キーボード設定
+    config ZMK_SPLIT
+        default y
+    
+    # ポインティングデバイス設定
+    config INPUT
+        default y
+    
+    config ZMK_POINTING
+        default y
+    
+    # SPI通信（センサー用）
+    config SPI
+        default y
+    
+    # PMW3610センサー（MONA2のPAW3222に相当）
+    config PMW3610
+        default y
+    
+    # RGB LEDバッテリー表示閾値
+    config RGBLED_WIDGET_BATTERY_LEVEL_HIGH
+        default 30
+    
+    config RGBLED_WIDGET_BATTERY_LEVEL_CRITICAL
+        default 10
 endif
