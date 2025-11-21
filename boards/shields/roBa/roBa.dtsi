@@ -112,17 +112,9 @@
         triggers-per-rotation = <10>;
     };
 
-    trackball_listener: trackball_listener {
+    // トラックパッド用のlistener
+    trackpad_listener: trackpad_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
-    };
-};
-
-&spi0 {
-    status = "disabled";
-
-    trackball: trackball@0 {
-        status = "disabled";
-        reg = <0>;
     };
 };
