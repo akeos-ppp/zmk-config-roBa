@@ -86,7 +86,10 @@
      *   6: bt
      *   7: win
      */
-    input-processors = <&zip_temp_layer 4 8000>;
+input-processors = 
+        <&zip_temp_layer 4 8000>,
+        <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
+        <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
 
     /*
      * SCROLL レイヤー (5) のときだけスクロールモードにする。
