@@ -2,7 +2,7 @@
 #include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 
-/* --- column offset for right half --- */
+/* --- right half column offset --- */
 &default_transform {
     col-offset = <6>;
 };
@@ -22,7 +22,7 @@
         group1 {
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;  /* MISO は実配線に合わせて必要なら変更 */
+                    <NRF_PSEL(SPIM_MISO, 0, 6)>;  /* MISO は実配線に合わせて必要なら変更 */
         };
     };
 
@@ -30,7 +30,7 @@
         group1 {
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
+                    <NRF_PSEL(SPIM_MISO, 0, 6)>;
             low-power-enable;
         };
     };
@@ -63,26 +63,36 @@
     };
 };
 
-/* --- Trackball listener --- */
+/* --- Trackball listener: Auto Mouse Layer + scroll --- */
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
 
-    /* 通常ポインタとして常時有効（レイヤー0） */
+    /* Auto Mouse Layer (AML)
+     *  - 4 = MOUSE レイヤー
+     *  - 8000ms = 最後の入力から 8 秒間維持
+     */
+    input-processors = <&zip_temp_layer 4 8000>;
+
+    /* 通常ポインタモード（カーソル移動） */
     pointer {
-        layers = <0>;
-        /* 180° 回転相当 = X反転 + Y反転
-           どちらかだけ逆にしたいなら、片方だけ残せばOK */
+        /* ポインタを効かせたいレイヤー
+         * 0: デフォルト, 4: MOUSE, 5: SCROLL, 6: NUM
+         * （多めに入れておいても問題なし）
+         */
+        layers = <0 4 5 6>;
+
+        /* いまの動きが「自然」になっている前提で X/Y 反転を維持 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
                            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
-    /* スクロールモードを使いたくなったら追加する：
+    /* スクロールモード（SCROLL レイヤー = 5） */
     scroller {
-        layers = <2>;  // スクロールを有効にするレイヤー番号
-        input-processors = <
-            &zip_xy_to_scroll_mapper
-        >;
+        layers = <5>;
+
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP>, /* 必要に応じてX/Y入れ替え */
+                           <&zip_xy_to_scroll_mapper>,                  /* 移動 → スクロールに変換 */
+                           <&zip_scroll_scaler 1 5>;                    /* スクロール量を 1/5 に */
     };
-    */
 };
