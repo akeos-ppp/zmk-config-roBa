@@ -47,20 +47,3 @@
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
 };
-/ {
-    roba_xy_transform: input_processor_transform {
-        compatible = "zmk,input-processor-transform";
-        #input-processor-cells = <1>;
-        type = <INPUT_EV_REL>;
-    };
-
-    trackball_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&trackball>;
-        
-        // 1 = X_INVERT, 2 = Y_INVERT
-        input-processors = <&roba_xy_transform 1>,
-                          <&roba_xy_transform 2>;
-    };
-};
