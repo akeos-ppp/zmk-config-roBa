@@ -22,7 +22,7 @@
         group1 {
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;  /* MISO ピンは実配線に合わせて必要なら変更 */
+                    <NRF_PSEL(SPIM_MISO, 0, 4)>;  /* MISO は実配線に合わせて必要なら変更 */
         };
     };
 
@@ -63,20 +63,23 @@
     };
 };
 
-/* --- Trackball listener: 180° ひっくり返し（X/Y両方反転）--- */
+/* --- Trackball listener --- */
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
 
+    /* 通常ポインタとして常時有効（レイヤー0） */
     pointer {
-        /* 180° 回転相当 = X反転 + Y反転 */
-        input-processors = <&zip_xy_transform
-                            (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+        layers = <0>;
+        /* 180° 回転相当 = X反転 + Y反転
+           どちらかだけ逆にしたいなら、片方だけ残せばOK */
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
+                           <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
 
-    /* スクロールモードを追加する場合の雛形（必要になったらコメント外す）
+    /* スクロールモードを使いたくなったら追加する：
     scroller {
-        layers = <2>;  // 有効にしたいレイヤー番号
+        layers = <2>;  // スクロールを有効にするレイヤー番号
         input-processors = <
             &zip_xy_to_scroll_mapper
         >;
