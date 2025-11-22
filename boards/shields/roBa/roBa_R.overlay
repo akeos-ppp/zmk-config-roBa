@@ -53,24 +53,31 @@
 };
 
 / {
+    // 軸反転用のinput processor
+    input_config_inverse: input_config_inverse {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <0>;
+        
+        // X軸とY軸を両方反転（180度回転相当）
+        x-invert;
+        y-invert;
+        
+        // 必要に応じて以下も調整可能
+        // xy-swap;  // XとYを入れ替え
+        // scale-multiplier = <1>;
+        // scale-divisor = <1>;
+    };
+    
     trackball_listener {
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
         
-        // 軸反転設定（必要に応じて調整）
-        // オプション1: X軸とY軸を両方反転（180度回転相当）
-        xy-swap;
-        x-invert;
-        y-invert;
+        // オートマウスレイヤー設定
+        // Layer 4 = MOUSE レイヤー
+        layers = <4>;
         
-        // オプション2: X軸のみ反転
-        // x-invert;
-        
-        // オプション3: Y軸のみ反転
-        // y-invert;
-        
-        // オプション4: XとYを入れ替え
-        // xy-swap;
+        // 軸反転を適用
+        input-processors = <&input_config_inverse>;
     };
 };
