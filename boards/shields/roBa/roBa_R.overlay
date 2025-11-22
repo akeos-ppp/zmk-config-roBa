@@ -68,27 +68,24 @@
     status = "okay";
     device = <&trackball_central>;
 
-    /* Auto Mouse Layer (AML)
-     *  - 4 = MOUSE レイヤー
-     *  - 8000ms = 最後の入力から 8 秒間維持
-     */
-    input-processors = <&zip_temp_layer 4 8000>;
-
     /* 通常ポインタモード（カーソル移動） */
     pointer {
-        /* 全レイヤーでトラックボールを有効にする */
+        /* 全レイヤーでトラックボール入力を有効化 */
         layers = <0 1 2 3 4 5 6 7>;
 
-        /* 以前「自然な向き」だった X/Y 反転をそのまま維持 */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
-                           <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+        /* ★ここで AML → その後に座標変換をかける順番が大事 */
+        input-processors =
+            <&zip_temp_layer 4 8000>,                      /* 4 = MOUSE レイヤー, 8 秒維持 */
+            <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,  /* 左右反転（今の向きに合わせて維持） */
+            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;  /* 上下反転（今の向きに合わせて維持） */
     };
 
     /* スクロールモード（SCROLL レイヤー = 5） */
     scroller {
         layers = <5>;
 
-        input-processors = <&zip_xy_to_scroll_mapper>,
-                           <&zip_scroll_scaler 1 5>;
+        input-processors =
+            <&zip_xy_to_scroll_mapper>,    /* XY → スクロールに変換 */
+            <&zip_scroll_scaler 1 5>;      /* スクロール量を 1/5 に */
     };
 };
