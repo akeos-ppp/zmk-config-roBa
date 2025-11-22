@@ -73,7 +73,7 @@
     device = <&trackball_central>;
 
     /*
-     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 8000ms オン
+     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 2000ms オン
      * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
      */
     input-processors = <
