@@ -56,16 +56,10 @@
     // 軸反転用のinput processor
     input_config_inverse: input_config_inverse {
         compatible = "zmk,input-processor-transform";
-        #input-processor-cells = <0>;
         
         // X軸とY軸を両方反転（180度回転相当）
         x-invert;
         y-invert;
-        
-        // 必要に応じて以下も調整可能
-        // xy-swap;  // XとYを入れ替え
-        // scale-multiplier = <1>;
-        // scale-divisor = <1>;
     };
     
     trackball_listener {
