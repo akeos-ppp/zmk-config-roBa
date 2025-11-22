@@ -1,5 +1,6 @@
 #include "roBa.dtsi"
-#include <dt-bindings/zmk/input-transform.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 /* --- column offset for right half --- */
 &default_transform {
@@ -62,22 +63,23 @@
     };
 };
 
-/* --- Trackball listener: XY 反転で向きを調整 --- */
+/* --- Trackball listener: 180° ひっくり返し（X/Y両方反転）--- */
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
 
     pointer {
-        /* 必要に応じて X/Y どちらかだけ残す */
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
-                           <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+        /* 180° 回転相当 = X反転 + Y反転 */
+        input-processors = <&zip_xy_transform
+                            (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
     };
 
-    /* スクロールモードを追加したい場合は、あとからここに scroller ブロックを足す */
-    /*
+    /* スクロールモードを追加する場合の雛形（必要になったらコメント外す）
     scroller {
-        layers = <2>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
+        layers = <2>;  // 有効にしたいレイヤー番号
+        input-processors = <
+            &zip_xy_to_scroll_mapper
+        >;
     };
     */
-}
+};
