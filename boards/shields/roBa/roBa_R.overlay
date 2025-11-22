@@ -58,11 +58,8 @@
         status = "okay";
         device = <&trackball>;
         
-        // オートマウスレイヤー設定
-        // Layer 4 = MOUSE レイヤー
-        layers = <4>;
-        
-        // 軸を反転（-1倍 = 0xFFFFFFFF）
+        // 軸を反転（X軸とY軸を両方-1倍）
+        // 0xFFFFFFFF = -1 (32bit signed int)
         xy-scale-multiplier = <0xFFFFFFFF 0xFFFFFFFF>;
     };
 };
