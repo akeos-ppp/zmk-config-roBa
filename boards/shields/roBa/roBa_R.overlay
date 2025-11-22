@@ -3,6 +3,7 @@
 &default_transform {
     col-offset = <6>;
 };
+
 &kscan0 {
     col-gpios
         = <&xiao_d 10 GPIO_ACTIVE_HIGH>
@@ -12,6 +13,7 @@
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
         ;
 };
+
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -30,7 +32,9 @@
         };
     };
 };
+
 &xiao_serial { status = "disabled"; };
+
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -45,5 +49,21 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+};
+
+/ {
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&trackball>;
+
+scroller {
+        layers = <5>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP>,        //X軸とY軸の入れ替え
+                           <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,       //X軸反転
+                           <&zip_xy_to_scroll_mapper>,                         //スクロールモードに変更
+                           <&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>,   //スクロールのX軸反転
+                           <&zip_scroll_scaler 1 5>;                           //スクロール量を1/4倍
     };
 };
