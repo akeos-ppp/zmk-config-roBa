@@ -53,13 +53,15 @@
 };
 
 / {
-    // 軸反転用のinput processor
+    // 軸反転用のinput processor (scaler使用)
     input_config_inverse: input_config_inverse {
-        compatible = "zmk,input-processor-transform";
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
         
-        // X軸とY軸を両方反転（180度回転相当）
-        x-invert;
-        y-invert;
+        // X軸とY軸を反転（-1倍）
+        scale-multiplier = <(-1)>;
+        scale-divisor = <1>;
     };
     
     trackball_listener {
