@@ -57,5 +57,20 @@
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
+        
+        // 軸反転設定（必要に応じて調整）
+        // オプション1: X軸とY軸を両方反転（180度回転相当）
+        xy-swap;
+        x-invert;
+        y-invert;
+        
+        // オプション2: X軸のみ反転
+        // x-invert;
+        
+        // オプション3: Y軸のみ反転
+        // y-invert;
+        
+        // オプション4: XとYを入れ替え
+        // xy-swap;
     };
 };
