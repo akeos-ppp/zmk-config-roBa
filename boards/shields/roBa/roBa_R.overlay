@@ -22,7 +22,7 @@
         group1 {
             psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 4)>;  /* MISO は実配線に合わせて必要なら変更 */
+                    <NRF_PSEL(SPIM_MISO, 0, 4)>;
         };
     };
 
@@ -76,13 +76,10 @@
 
     /* 通常ポインタモード（カーソル移動） */
     pointer {
-        /* ポインタを効かせたいレイヤー
-         * 0: デフォルト, 4: MOUSE, 5: SCROLL, 6: NUM
-         * （多めに入れておいても問題なし）
-         */
-        layers = <0 4 5 6>;
+        /* 全レイヤーでトラックボールを有効にする */
+        layers = <0 1 2 3 4 5 6 7>;
 
-        /* いまの動きが「自然」になっている前提で X/Y 反転を維持 */
+        /* 以前「自然な向き」だった X/Y 反転をそのまま維持 */
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
                            <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>;
     };
@@ -91,8 +88,7 @@
     scroller {
         layers = <5>;
 
-        input-processors = <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP>, /* 必要に応じてX/Y入れ替え */
-                           <&zip_xy_to_scroll_mapper>,                  /* 移動 → スクロールに変換 */
-                           <&zip_scroll_scaler 1 5>;                    /* スクロール量を 1/5 に */
+        input-processors = <&zip_xy_to_scroll_mapper>,
+                           <&zip_scroll_scaler 1 5>;
     };
 };
