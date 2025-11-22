@@ -1,5 +1,4 @@
 #include "roBa.dtsi"
-#include <dt-bindings/zmk/input_transform.h>
 
 &default_transform {
     col-offset = <6>;
@@ -60,7 +59,8 @@
         status = "okay";
         device = <&trackball>;
         
-        input-processors = <&roba_xy_transform INPUT_TRANSFORM_X_INVERT>,
-                          <&roba_xy_transform INPUT_TRANSFORM_Y_INVERT>;
+        // 1 = X_INVERT, 2 = Y_INVERT
+        input-processors = <&roba_xy_transform 1>,
+                          <&roba_xy_transform 2>;
     };
 };
