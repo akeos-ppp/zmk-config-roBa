@@ -45,7 +45,7 @@
     
     trackball: trackball@0 {
         status = "okay";
-        compatible = "pixart,paw3222";
+        compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
@@ -57,20 +57,5 @@
         compatible = "zmk,input-listener";
         status = "okay";
         device = <&trackball>;
-        
-        // 軸反転設定（必要に応じて調整）
-        // オプション1: X軸とY軸を両方反転（180度回転相当）
-        xy-swap;
-        x-invert;
-        y-invert;
-        
-        // オプション2: X軸のみ反転
-        // x-invert;
-        
-        // オプション3: Y軸のみ反転
-        // y-invert;
-        
-        // オプション4: XとYを入れ替え
-        // xy-swap;
     };
 };
