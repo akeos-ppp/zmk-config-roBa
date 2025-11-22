@@ -53,17 +53,6 @@
 };
 
 / {
-    // 軸反転用のinput processor (scaler使用)
-    input_config_inverse: input_config_inverse {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <0>;
-        type = <INPUT_EV_REL>;
-        
-        // X軸とY軸を反転（-1倍）
-        scale-multiplier = <(-1)>;
-        scale-divisor = <1>;
-    };
-    
     trackball_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -73,7 +62,7 @@
         // Layer 4 = MOUSE レイヤー
         layers = <4>;
         
-        // 軸反転を適用
-        input-processors = <&input_config_inverse>;
+        // 軸を反転（-1倍 = 0xFFFFFFFF）
+        xy-scale-multiplier = <0xFFFFFFFF 0xFFFFFFFF>;
     };
 };
