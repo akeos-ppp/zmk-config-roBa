@@ -73,11 +73,11 @@
     device = <&trackball_central>;
 
     /*
-     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 2000ms オン
+     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
      * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
      */
     input-processors = <
-        &zip_temp_layer 4 2000
+        &zip_temp_layer 4 1000
         &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
     >;
 
@@ -87,6 +87,7 @@
         input-processors = <
             &zip_xy_to_scroll_mapper
             &zip_scroll_scaler 1 5
+            &zip_scroll_x_scaler 0 1   // ★ 横スクロール成分を 0 倍にしてカット
         >;
     };
 };
