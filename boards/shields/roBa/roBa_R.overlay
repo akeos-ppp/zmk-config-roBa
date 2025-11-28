@@ -18,23 +18,21 @@
         ;
 };
 
-/* --- SPI ピン設定（PAW3222 用） --- */
+/* --- I2C ピン設定（IQS7211E 用） --- */
 &pinctrl {
-    spi0_default: spi0_default {
+    i2c0_default: i2c0_default {
         group1 {
-            psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 20)>;
+            bias-pull-up;
         };
     };
 
-    spi0_sleep: spi0_sleep {
+    i2c0_sleep: i2c0_sleep {
         group1 {
-            psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 20)>;
+            bias-pull-up;
             low-power-enable;
         };
     };
@@ -45,48 +43,25 @@
     status = "disabled";
 };
 
-/* --- SPI0 + PAW3222 センサ本体 --- */
-&spi0 {
+/* --- I2C0 + IQS7211E トラックパッド本体 --- */
+&i2c0 {
     status = "okay";
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
+    compatible = "nordic,nrf-twim";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
     pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_FAST>;
+    zephyr,concat-buf-size = <32>;
 
-    /* CS ピン (P0.09) */
-    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
-
-    trackball_central: trackball_central@0 {
+    trackpad: trackpad@56 {
         status = "okay";
-        compatible = "pixart,paw3222";
-        reg = <0>;
-        spi-max-frequency = <2000000>;
+        compatible = "azoteq,iqs7211e";
+        reg = <0x56>;
 
-        /* MOTION ピン: P0.02 → IRQ 割り込み */
-        irq-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
-    };
-};
+        /* RDY ピン (アクティブロー, プルアップ) */
+        irq-gpios = <&gpio0 21 GPIO_PULL_UP>;
 
-/* --- トラックボール Listener (AML + スクロール) --- */
-&trackball_central_listener {
-    status = "okay";
-    device = <&trackball_central>;
-
-    /*
-     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
-     * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
-     */
-    input-processors = <
-        &zip_temp_layer 4 1000
-        &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
-    >;
-
-    /* SCROLL レイヤー (5) のときだけスクロールモード */
-    scroller {
-        layers = <5>;
-        input-processors = <
-            &zip_xy_to_scroll_mapper
-            &zip_scroll_scaler 1 10
-        >;
+        /* 任意: 電源制御用 GPIO (アクティブハイ) */
+        power-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
     };
 };
