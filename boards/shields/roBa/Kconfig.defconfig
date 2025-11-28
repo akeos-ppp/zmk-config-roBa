@@ -16,8 +16,9 @@ endif
 
 if SHIELD_ROBA_R || SHIELD_ROBA_L
 
-config NFCT_PINS_AS_GPIOS
-    default y
+# NFC ピンを GPIO としてはもう使わない（deprecated 対策）
+# config NFCT_PINS_AS_GPIOS
+#     default y
 
 config ZMK_SPLIT
     default y
@@ -28,12 +29,13 @@ config INPUT
 config ZMK_POINTING
     default y
 
-config SPI
+# IQS7211E は I2C 接続なので、SPI → I2C に変更
+config I2C
     default y
 
-# PAW3222光学センサー（トラックボール）
-config PAW3222
-    default y
+# PAW3222 光学センサー（削除！）
+# config PAW3222
+#     default y
 
 # RGB LED設定
 config RGBLED_WIDGET_BATTERY_LEVEL_HIGH
