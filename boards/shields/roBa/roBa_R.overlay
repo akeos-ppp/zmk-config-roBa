@@ -1,5 +1,4 @@
 #include "roBa.dtsi"
-#include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 
 /* --- 右手側の列オフセット --- */
@@ -19,19 +18,22 @@
 };
 
 /* --- I2C ピン設定（IQS7211E 用） --- */
+/* ★ SCL/SDA の P0.xx は実際の配線に合わせて変更する */
 &pinctrl {
     i2c0_default: i2c0_default {
         group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
-                    <NRF_PSEL(TWIM_SCL, 0, 20)>;
+            psels =
+                <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
             bias-pull-up;
         };
     };
 
     i2c0_sleep: i2c0_sleep {
         group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 17)>,
-                    <NRF_PSEL(TWIM_SCL, 0, 20)>;
+            psels =
+                <NRF_PSEL(TWIM_SDA, 0, 17)>,
+                <NRF_PSEL(TWIM_SCL, 0, 20)>;
             bias-pull-up;
             low-power-enable;
         };
@@ -44,6 +46,7 @@
 };
 
 /* --- I2C0 + IQS7211E トラックパッド本体 --- */
+/* ★ irq-gpios の P0.xx も RDY の実配線に合わせて変更する */
 &i2c0 {
     status = "okay";
     compatible = "nordic,nrf-twim";
@@ -59,9 +62,11 @@
         reg = <0x56>;
 
         /* RDY ピン (アクティブロー, プルアップ) */
-        irq-gpios = <&gpio0 21 GPIO_PULL_UP>;
+        irq-gpios = <&gpio0 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
-        /* 任意: 電源制御用 GPIO (アクティブハイ) */
-        power-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
+        /* 電源を GPIO で制御している場合だけ有効化
+         * 3.3V 直結なら power-gpios 行は削除してよい
+         */
+        // power-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
     };
 };
