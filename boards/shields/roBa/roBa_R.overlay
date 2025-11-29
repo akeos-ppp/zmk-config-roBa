@@ -17,14 +17,20 @@
         ;
 };
 
-/* --- I2C ピン設定（IQS7211E 用） --- */
-/* ★ SCL/SDA の P0.xx は実際の配線に合わせて変更する */
+/* --- I2C0 ピン設定（IQS7211E 用）
+ *
+ * 元の配線:
+ *  - P0.05: SPI SCK   → ここでは I2C SCL
+ *  - P0.04: SPI MOSI  → ここでは I2C SDA
+ *  - P0.02: MOTION    → ここでは RDY (IRQ)
+ *  - P0.09: CS        → 必要なら電源制御に流用
+ */
 &pinctrl {
     i2c0_default: i2c0_default {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 17)>,
-                <NRF_PSEL(TWIM_SCL, 0, 20)>;
+                <NRF_PSEL(TWIM_SCL, 0, 5)>,  /* SCL: P0.05 */
+                <NRF_PSEL(TWIM_SDA, 0, 4)>;  /* SDA: P0.04 */
             bias-pull-up;
         };
     };
@@ -32,41 +38,44 @@
     i2c0_sleep: i2c0_sleep {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 17)>,
-                <NRF_PSEL(TWIM_SCL, 0, 20)>;
+                <NRF_PSEL(TWIM_SCL, 0, 5)>,
+                <NRF_PSEL(TWIM_SDA, 0, 4)>;
             bias-pull-up;
             low-power-enable;
         };
     };
 };
 
-/* UART は使わないので無効化 */
+/* UART は使わないので無効化（元と同じ） */
 &xiao_serial {
     status = "disabled";
 };
 
 /* --- I2C0 + IQS7211E トラックパッド本体 --- */
-/* ★ irq-gpios の P0.xx も RDY の実配線に合わせて変更する */
 &i2c0 {
     status = "okay";
     compatible = "nordic,nrf-twim";
     pinctrl-0 = <&i2c0_default>;
     pinctrl-1 = <&i2c0_sleep>;
     pinctrl-names = "default", "sleep";
+
+    /* 400kHz I2C (標準的な設定) */
     clock-frequency = <I2C_BITRATE_FAST>;
     zephyr,concat-buf-size = <32>;
 
     trackpad: trackpad@56 {
         status = "okay";
         compatible = "azoteq,iqs7211e";
-        reg = <0x56>;
+        reg = <0x56>;  /* IQS7211E 固定アドレス */
 
-        /* RDY ピン (アクティブロー, プルアップ) */
-        irq-gpios = <&gpio0 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-
-        /* 電源を GPIO で制御している場合だけ有効化
-         * 3.3V 直結なら power-gpios 行は削除してよい
+        /* RDY: 元 MOTION の P0.02 を流用
+         *  open-drain active-low なので、LOW + PULL_UP
          */
-        // power-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        /* もし VCC を P0.09 で ON/OFF しているなら、以下を有効にする
+         *  元の CS(P0.09) を電源制御に流用している場合を想定
+         */
+        // power-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
     };
 };
