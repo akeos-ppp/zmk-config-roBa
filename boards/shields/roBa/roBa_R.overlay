@@ -3,6 +3,9 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
+/* レイヤー番号のマクロ（MOUSEレイヤー） */
+#define MOUSE 4
+
 /* --- 右手側の列オフセット --- */
 &default_transform {
     col-offset = <6>;
@@ -68,44 +71,36 @@
     };
 };
 
-/* --- Input Processor 定義（X/Y 別スクロールスケーラー） --- */
- / {
-    input_processors {
-        /* 水平スクロール用スケーラー（X方向） */
-        zip_scroll_x_scaler: zip_scroll_x_scaler {
-            compatible = "zmk,input-processor-scaler";
-            #input-processor-cells = <2>;
-            type = <INPUT_EV_REL>;
-            codes = <INPUT_REL_HWHEEL>;
-            track-remainders;
-        };
-
-        /* 垂直スクロール用スケーラー（Y方向） */
-        zip_scroll_y_scaler: zip_scroll_y_scaler {
-            compatible = "zmk,input-processor-scaler";
-            #input-processor-cells = <2>;
-            type = <INPUT_EV_REL>;
-            codes = <INPUT_REL_WHEEL>;
-            track-remainders;
-        };
+/* --- 既存 input_processors ノードを拡張してスケーラーを追加 --- */
+&input_processors {
+    /* 水平スクロール用スケーラー（X方向） */
+    zip_scroll_x_scaler: zip_scroll_x_scaler {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_HWHEEL>;
+        track-remainders;
     };
 
-/* --- zip_temp_layer の設定 --- */
+    /* 垂直スクロール用スケーラー（Y方向） */
+    zip_scroll_y_scaler: zip_scroll_y_scaler {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_WHEEL>;
+        track-remainders;
+    };
+}
+
+/* --- zip_temp_layer の設定（AML解除条件など） --- */
 &zip_temp_layer {
-    excluded-positions = 
-        7    /* MB3 (I) */
-        16   /* capture */
-        18   /* MB1 (J) */
-        19   /* mo 5 (K) */
-        20   /* MB2 (L) */
-        22   /* mt LEFT_SHIFT Z */
-        30   /* mission */
-        31   /* launchpad */
-        33   /* mt RIGHT_SHIFT SLASH */
-    >;
+    /* AMLを解除したいキー位置（レイヤー0のposition番号）をまとめて<>で指定 */
+    excluded-positions = <7 16 18 19 20 22 30 31 33>;
     require-prior-idle-ms = <200>;
 };
-    /* --- トラックボール Listener (AML + スクロール) --- */
+
+/* --- トラックボール Listener (AML + スクロール) --- */
+ / {
     trackball_central_listener: trackball_central_listener {
         compatible = "zmk,input-listener";
         status = "okay";
@@ -116,7 +111,7 @@
          * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
          */
         input-processors = <
-            &zip_temp_layer 4 1000
+            &zip_temp_layer MOUSE 1000
             &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
         >;
 
