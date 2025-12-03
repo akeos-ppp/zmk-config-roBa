@@ -1,6 +1,7 @@
 #include "roBa.dtsi"
 #include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 /* --- 右手側の列オフセット --- */
 &default_transform {
