@@ -90,6 +90,21 @@
         };
     };
 
+/* --- zip_temp_layer の設定 --- */
+&zip_temp_layer {
+    excluded-positions = 
+        7    /* MB3 (I) */
+        16   /* capture */
+        18   /* MB1 (J) */
+        19   /* mo 5 (K) */
+        20   /* MB2 (L) */
+        22   /* mt LEFT_SHIFT Z */
+        30   /* mission */
+        31   /* launchpad */
+        33   /* mt RIGHT_SHIFT SLASH */
+    >;
+    require-prior-idle-ms = <200>;
+};
     /* --- トラックボール Listener (AML + スクロール) --- */
     trackball_central_listener: trackball_central_listener {
         compatible = "zmk,input-listener";
