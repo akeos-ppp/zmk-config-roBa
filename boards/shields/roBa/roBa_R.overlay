@@ -68,7 +68,7 @@
     };
 };
 
-/* --- Input Processor 定義（スクロール X/Y 別スケーラー） --- */
+/* --- Input Processor 定義（X/Y 別スクロールスケーラー） --- */
  / {
     input_processors {
         /* 水平スクロール用スケーラー（X方向） */
@@ -89,39 +89,40 @@
             track-remainders;
         };
     };
-};
 
-/* --- トラックボール Listener (AML + スクロール) --- */
-&trackball_central_listener {
-    status = "okay";
-    device = <&trackball_central>;
+    /* --- トラックボール Listener (AML + スクロール) --- */
+    trackball_central_listener: trackball_central_listener {
+        compatible = "zmk,input-listener";
+        status = "okay";
+        device = <&trackball_central>;
 
-    /*
-     * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
-     * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
-     */
-    input-processors = <
-        &zip_temp_layer 4 1000
-        &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
-    >;
-
-    /* ===== レイヤー 5: 縦スクロール専用（上下のみ） ===== */
-    scroller_vertical {
-        layers = <5>;
+        /*
+         * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
+         * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
+         */
         input-processors = <
-            &zip_xy_to_scroll_mapper
-            &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
-            &zip_scroll_scaler 1 10    /* 全体を 1/10 にしてフニャフニャ軽減 */
+            &zip_temp_layer 4 1000
+            &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
         >;
-    };
 
-    /* ===== レイヤー 3: 横スクロール専用（左右のみ） ===== */
-    scroller_horizontal {
-        layers = <3>;
-        input-processors = <
-            &zip_xy_to_scroll_mapper
-            &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
-            &zip_scroll_scaler 1 10    /* 縦と同じく 1/10 に抑える */
-        >;
+        /* ===== レイヤー 5: 縦スクロール専用（上下のみ） ===== */
+        scroller_vertical {
+            layers = <5>;
+            input-processors = <
+                &zip_xy_to_scroll_mapper
+                &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
+                &zip_scroll_scaler 1 10    /* 全体 1/10 でフニャ軽減 */
+            >;
+        };
+
+        /* ===== レイヤー 2: 横スクロール専用（左右のみ） ===== */
+        scroller_horizontal {
+            layers = <3>;
+            input-processors = <
+                &zip_xy_to_scroll_mapper
+                &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
+                &zip_scroll_scaler 1 10    /* 少しだけ動く横スクロール */
+            >;
+        };
     };
 };
