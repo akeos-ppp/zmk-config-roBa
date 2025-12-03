@@ -224,6 +224,16 @@
             flavor = "balanced";
             quick-tap-ms = <200>;
         };
+
+/* ★ ここから追加：エンコーダをマウススクロールにする behavior ★ */
+        encoder_msc_down_up: encoder_msc_down_up {
+            compatible = "zmk,behavior-sensor-rotate";
+            label = "ENCODER_MSC_DOWN_UP";
+            #sensor-binding-cells = <0>;
+            /* 時計回り: SCRL_UP / 反時計回り: SCRL_DOWN にしたいなら入れ替え */
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            tap-ms = <20>;
+        };
     };
 
     keymap {
