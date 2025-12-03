@@ -246,8 +246,8 @@
 &mt_exit_AML_on_tap LEFT_SHIFT Z     &kp X         &kp C      &kp V          &kp B        &lt 6 RIGHT_PARENTHESIS         &kp SEMICOLON              &kp N        &kp M  &kp COMMA  &kp DOT  &mt_exit_AML_on_tap RIGHT_SHIFT SLASH
 &kp TAB                              &kp LEFT_ALT  &kp LCTRL  &kp BACKSPACE  &lt 3 SPACE  &lt_to_layer_0 5 BACKSPACE      &mt LEFT_COMMAND CAPSLOCK  &lt 2 ENTER                             &kp EQUAL
             >;
-
-            sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
+/* ★ rotary encoder = マウススクロール */
+            sensor-bindings = <&encoder_msc_down_up>;
         };
 
         FUNCTION {
