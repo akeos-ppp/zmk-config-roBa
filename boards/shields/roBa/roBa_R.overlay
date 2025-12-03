@@ -3,6 +3,19 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
+/* --- Input Processor 定義（水平スクロールだけをいじる） --- */
+ / {
+    input_processors {
+        zip_scroll_x_scaler: zip_scroll_x_scaler {
+            compatible = "zmk,input-processor-scaler";
+            #input-processor-cells = <2>;
+            type = <INPUT_EV_REL>;
+            codes = <INPUT_REL_HWHEEL>;  /* 水平スクロールだけ拾う */
+            track-remainders;
+        };
+    };
+};
+
 /* --- 右手側の列オフセット --- */
 &default_transform {
     col-offset = <6>;
@@ -72,17 +85,7 @@
 &trackball_central_listener {
     status = "okay";
     device = <&trackball_central>;
-/ {
-    input_processors {
-        zip_scroll_x_scaler: zip_scroll_x_scaler {
-            compatible = "zmk,input-processor-scaler";
-            #input-processor-cells = <2>;
-            type = <INPUT_EV_REL>;
-            codes = <INPUT_REL_HWHEEL>;  /* 水平スクロールだけ拾う */
-            track-remainders;
-        };
-    };
-};
+
     /*
      * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
      * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
