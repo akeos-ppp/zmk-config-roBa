@@ -74,7 +74,7 @@
 /* --- zip_temp_layer の設定（AML解除条件など） --- */
 &zip_temp_layer {
     /* AMLを解除したいキー位置（レイヤー0のposition番号）をまとめて<>で指定 */
-    excluded-positions = <7 16 18 19 20 22 30 31 33>;
+    excluded-positions = <7 16 18 19 20 22 31 32 33>;
     require-prior-idle-ms = <200>;
 };
 
