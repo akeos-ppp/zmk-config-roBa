@@ -1,12 +1,12 @@
-#include <behaviors.dtsi>
 #include <input/processors.dtsi>
+#include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
 /* マウススクロールの1ステップの量（Qiita記事と同じ） */
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 80
 
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 80
 #define MOUSE 4
 #define SCROLL 5
 #define NUM 6
@@ -17,16 +17,15 @@
 };
 
 /* --- マウスキーでタイムアウト延長 --- */
-&mkp_input_listener {
-    input-processors = <&zip_temp_layer MOUSE 1000>;
-};
+
+&mkp_input_listener { input-processors = <&zip_temp_layer MOUSE 1000>; };
 
 &mt {
     flavor = "balanced";
     quick-tap-ms = <0>;
 };
 
- / {
+/ {
     combos {
         compatible = "zmk,combos";
 
@@ -116,6 +115,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LC(UP)>;
+
             label = "MISSION";
         };
 
@@ -123,6 +123,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LG(SPACE)>;
+
             label = "LAUNCHPAD";
         };
 
@@ -130,6 +131,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LG(LS(N5))>;
+
             label = "CAPTURE";
         };
 
@@ -137,6 +139,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LA(LC(D))>;
+
             label = "LEFT";
         };
 
@@ -144,6 +147,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LA(LC(F))>;
+
             label = "CENTER";
         };
 
@@ -151,6 +155,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LA(LC(G))>;
+
             label = "RIGHT";
         };
 
@@ -158,6 +163,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LA(LC(E))>;
+
             label = "LEFT_TWO";
         };
 
@@ -165,6 +171,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_tap>, <&kp LA(LC(T))>;
+
             label = "RIGHT_TWO";
         };
 
@@ -176,6 +183,7 @@
                 <&macro_wait_time 200>,
                 <&bt BT_SEL 0>,
                 <&macro_wait_time 500>;
+
             label = "BT0";
         };
 
@@ -188,6 +196,7 @@
                 <&bt BT_SEL 1>,
                 <&macro_wait_time 500>,
                 <&tog_on 7>;
+
             label = "BT1";
         };
     };
@@ -197,6 +206,7 @@
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_0";
             bindings = <&mo>, <&to_layer_0>;
+
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
@@ -219,19 +229,24 @@
             compatible = "zmk,behavior-hold-tap";
             label = "MT_EXIT_AML_ON_TAP";
             bindings = <&kp>, <&kp_exit_AML>;
+
             #binding-cells = <2>;
             tapping-term-ms = <200>;
             flavor = "balanced";
             quick-tap-ms = <200>;
         };
 
-/* ★ ここから追加：エンコーダをマウススクロールにする behavior ★ */
+        /* ★ ここから追加：エンコーダをマウススクロールにする behavior ★ */
+
         encoder_msc_down_up: encoder_msc_down_up {
             compatible = "zmk,behavior-sensor-rotate";
             label = "ENCODER_MSC_DOWN_UP";
             #sensor-binding-cells = <0>;
+
             /* 時計回り: SCRL_UP / 反時計回り: SCRL_DOWN にしたいなら入れ替え */
+
             bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+
             tap-ms = <20>;
         };
     };
@@ -241,12 +256,14 @@
 
         default_layer {
             bindings = <
-&kp Q                                &kp W         &kp E      &kp R          &kp T                                                                   &kp Y        &kp U  &kp I      &kp O    &kp P
-&kp A                                &kp S         &kp D      &kp F          &kp G        &kp LEFT_PARENTHESIS            &kp DOUBLE_QUOTES          &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt_exit_AML_on_tap LEFT_SHIFT Z     &kp X         &kp C      &kp V          &kp B        &lt 6 RIGHT_PARENTHESIS         &kp SEMICOLON              &kp N        &kp M  &kp COMMA  &kp DOT  &mt_exit_AML_on_tap RIGHT_SHIFT SLASH
-&kp TAB                              &kp LEFT_ALT  &kp LCTRL  &kp BACKSPACE  &lt 3 SPACE  &lt_to_layer_0 5 BACKSPACE      &mt LEFT_COMMAND CAPSLOCK  &lt 2 ENTER                             &kp EQUAL
+&kp Q                             &kp W         &kp E      &kp R          &kp T                                                                   &kp Y        &kp U  &kp I      &kp O    &kp P
+&kp A                             &kp S         &kp D      &kp F          &kp G        &kp LEFT_PARENTHESIS            &kp DOUBLE_QUOTES          &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt_exit_AML_on_tap LEFT_SHIFT Z  &kp X         &kp C      &kp V          &kp B        &lt 6 RIGHT_PARENTHESIS         &kp SEMICOLON              &kp N        &kp M  &kp COMMA  &kp DOT  &mt_exit_AML_on_tap RIGHT_SHIFT SLASH
+&kp TAB                           &kp LEFT_ALT  &kp LCTRL  &kp BACKSPACE  &lt 3 SPACE  &lt_to_layer_0 5 BACKSPACE      &mt LEFT_COMMAND CAPSLOCK  &lt 2 ENTER                             &kp EQUAL
             >;
-/* ★ rotary encoder = マウススクロール */
+
+            /* ★ rotary encoder = マウススクロール */
+
             sensor-bindings = <&encoder_msc_down_up>;
         };
 
@@ -285,9 +302,9 @@
 
         MOUSE {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                        &trans  &trans    &mkp MB3    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &capture  &trans  &mkp MB1  &mo 5       &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans  &mission  &launchpad  &trans    &trans
+&trans  &trans  &trans  &trans  &trans                        &trans  &trans    &mkp MB3  &trans      &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &capture  &trans  &mkp MB1  &mo 5     &mkp MB2    &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans  &trans    &mission  &launchpad  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans    &trans                                  &trans
             >;
         };
@@ -312,10 +329,10 @@
 
         win {
             bindings = <
-&kp Q                                &kp W         &kp E      &kp R         &kp T                                                            &kp Y        &kp U  &kp I      &kp O    &kp P
-&kp A                                &kp S         &kp D      &kp F         &kp G        &kp LEFT_PARENTHESIS            &kp DOUBLE_QUOTES   &kp H        &kp J  &kp K      &kp L    &kp MINUS
-&mt_exit_AML_on_tap LEFT_SHIFT Z     &kp X         &kp C      &kp V         &kp B        &lt 6 RIGHT_PARENTHESIS         &kp SEMICOLON       &kp N        &kp M  &kp COMMA  &kp DOT  &mt_exit_AML_on_tap RIGHT_SHIFT SLASH
-&kp TAB                              &kp LEFT_ALT  &kp LCTRL  &kp LEFT_WIN  &lt 3 SPACE  &lt_to_layer_0 5 BACKSPACE      &kp LC(LEFT_SHIFT)  &lt 3 ENTER                             &kp EQUAL
+&kp Q                             &kp W         &kp E      &kp R         &kp T                                                            &kp Y        &kp U  &kp I      &kp O    &kp P
+&kp A                             &kp S         &kp D      &kp F         &kp G        &kp LEFT_PARENTHESIS            &kp DOUBLE_QUOTES   &kp H        &kp J  &kp K      &kp L    &kp MINUS
+&mt_exit_AML_on_tap LEFT_SHIFT Z  &kp X         &kp C      &kp V         &kp B        &lt 6 RIGHT_PARENTHESIS         &kp SEMICOLON       &kp N        &kp M  &kp COMMA  &kp DOT  &mt_exit_AML_on_tap RIGHT_SHIFT SLASH
+&kp TAB                           &kp LEFT_ALT  &kp LCTRL  &kp LEFT_WIN  &lt 3 SPACE  &lt_to_layer_0 5 BACKSPACE      &kp LC(LEFT_SHIFT)  &lt 3 ENTER                             &kp EQUAL
             >;
 
             sensor-bindings = <&inc_dec_kp PG_UP PAGE_DOWN>;
