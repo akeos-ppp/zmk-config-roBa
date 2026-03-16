@@ -25,7 +25,7 @@ manifest:
     #   revision: main
     - name: zmk-driver-paw3222
       remote: sekigon-gonnoc
-      revision: mai
+      revision: main
     - name: zmk-rgbled-widget
       remote: caksoylar
       revision: main
