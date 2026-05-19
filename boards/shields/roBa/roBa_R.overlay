@@ -1,17 +1,25 @@
 #include "roBa.dtsi"
+
 #include <input/processors.dtsi>
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
 
-/* レイヤー番号のマクロ（MOUSEレイヤー） */
+/* レイヤー番号のマクロ */
 #define MOUSE 4
 
-/* --- 右手側の列オフセット --- */
+/* ========================================
+ * RIGHT SIDE MATRIX SETTINGS
+ * ======================================== */
+
+/* 右手側の列オフセット */
 &default_transform {
     col-offset = <6>;
 };
 
-/* --- 右手側の keyscan カラム定義 --- */
+/* 右手側の keyscan カラム定義 */
 &kscan0 {
     col-gpios
         = <&xiao_d 10 GPIO_ACTIVE_HIGH>
@@ -22,67 +30,146 @@
         ;
 };
 
-/* --- SPI ピン設定（PAW3222 用） --- */
-&pinctrl {
-    spi0_default: spi0_default {
-        group1 {
-            psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
-        };
-    };
-
-    spi0_sleep: spi0_sleep {
-        group1 {
-            psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
-            low-power-enable;
-        };
-    };
-};
-
 /* UART は使わないので無効化 */
 &xiao_serial {
     status = "disabled";
 };
 
-/* --- SPI0 + PAW3222 センサ本体 --- */
+/* ========================================
+ * DISABLE OLD PAW3222 / SPI
+ * ======================================== */
+
+/*
+ * PAW3222 は SPI 接続だったが、IQS7211E は I2C 接続。
+ * SPI0 は使わないので明示的に無効化する。
+ */
 &spi0 {
-    status = "okay";
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
-    pinctrl-names = "default", "sleep";
+    status = "disabled";
+};
 
-    /* CS ピン (P0.09) */
-    cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+/*
+ * roBa.dtsi 側に互換用の trackball ノードがあるため、
+ * 念のため PAW3222 系ノードも無効化しておく。
+ */
+&trackball {
+    status = "disabled";
+};
 
-    trackball_central: trackball_central@0 {
-        status = "okay";
-        compatible = "pixart,paw3222";
-        reg = <0>;
-        spi-max-frequency = <2000000>;
+&trackball_central {
+    status = "disabled";
+};
 
-        /* MOTION ピン: P0.02 → IRQ 割り込み */
-        irq-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
+&trackball_listener {
+    status = "disabled";
+};
+
+/* ========================================
+ * IQS7211E I2C PIN SETTINGS
+ * ======================================== */
+
+/*
+ * PAW3222 で使っていた GPIO を I2C 用に再利用。
+ *
+ * P0.04 = SDA
+ * P0.05 = SCL
+ *
+ * 物理配線側も、
+ * 旧 MOSI 線 → SDA
+ * 旧 SCK 線  → SCL
+ * に接続すること。
+ */
+&pinctrl {
+    roba_iqs7211e_i2c0_default: roba_iqs7211e_i2c0_default {
+        group1 {
+            psels =
+                <NRF_PSEL(TWIM_SDA, 0, 4)>,
+                <NRF_PSEL(TWIM_SCL, 0, 5)>;
+            bias-pull-up;
+        };
+    };
+
+    roba_iqs7211e_i2c0_sleep: roba_iqs7211e_i2c0_sleep {
+        group1 {
+            psels =
+                <NRF_PSEL(TWIM_SDA, 0, 4)>,
+                <NRF_PSEL(TWIM_SCL, 0, 5)>;
+            bias-pull-up;
+            low-power-enable;
+        };
     };
 };
 
-/* --- zip_temp_layer の設定（AML解除条件など） --- */
+/* ========================================
+ * IQS7211E TRACKPAD
+ * ======================================== */
+
+&i2c0 {
+    status = "okay";
+    compatible = "nordic,nrf-twim";
+
+    pinctrl-0 = <&roba_iqs7211e_i2c0_default>;
+    pinctrl-1 = <&roba_iqs7211e_i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    clock-frequency = <I2C_BITRATE_FAST>;
+    zephyr,concat-buf-size = <32>;
+
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    trackpad_central: trackpad@56 {
+        status = "okay";
+        compatible = "azoteq,iqs7211e";
+        reg = <0x56>;
+
+        /*
+         * 旧 PAW3222 MOTION ピンを IQS7211E RDY に流用。
+         * IQS7211E の RDY は active low。
+         */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        /*
+         * 旧 PAW3222 CS / P0.09 を電源制御に使う場合だけ有効化。
+         * IQS7211E の VDD を直接 3.3V に繋ぐならコメントアウトのままでよい。
+         */
+        /* power-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>; */
+
+        /*
+         * 通常のトラックパッドとして使うので scroller-mode は付けない。
+         *
+         * scroller-mode を付けると、1本指移動がカーソル移動ではなく
+         * スクロール入力になる。
+         */
+        /* scroller-mode; */
+
+        /*
+         * scroller-mode 使用時だけ必要に応じて有効化。
+         */
+        /* v-invert; */
+        /* h-invert; */
+    };
+};
+
+/* ========================================
+ * TEMP MOUSE LAYER SETTINGS
+ * ======================================== */
+
 &zip_temp_layer {
-    /* AMLを解除したいキー位置（レイヤー0のposition番号）をまとめて<>で指定 */
+    /*
+     * AML を解除したいキー位置。
+     * 既存設定をそのまま維持。
+     */
     excluded-positions = <7 16 18 19 20 22 31 32 33>;
     require-prior-idle-ms = <200>;
 };
 
-/* --- Input Processor 定義 + トラックボール Listener --- */
+/* ========================================
+ * INPUT PROCESSORS
+ * ======================================== */
+
  / {
-    /* ここで input_processors ノードを拡張（または新規作成） */
     input_processors {
-        /* 水平スクロール用スケーラー（X方向） */
+        /* 水平スクロール用スケーラー */
         zip_scroll_x_scaler: zip_scroll_x_scaler {
             compatible = "zmk,input-processor-scaler";
             #input-processor-cells = <2>;
@@ -91,7 +178,7 @@
             track-remainders;
         };
 
-        /* 垂直スクロール用スケーラー（Y方向） */
+        /* 垂直スクロール用スケーラー */
         zip_scroll_y_scaler: zip_scroll_y_scaler {
             compatible = "zmk,input-processor-scaler";
             #input-processor-cells = <2>;
@@ -100,40 +187,54 @@
             track-remainders;
         };
     };
+};
 
-    /* --- トラックボール Listener (AML + スクロール) --- */
-    trackball_central_listener: trackball_central_listener {
-        compatible = "zmk,input-listener";
-        status = "okay";
-        device = <&trackball_central>;
+/* ========================================
+ * INPUT LISTENER FOR IQS7211E
+ * ======================================== */
 
-        /*
-         * 1) トラックボールが動いたら MOUSE レイヤー (4) を 1000ms オン
-         * 2) その入力に XY 反転をかけて、取り付け向きに合わせる
-         */
+/*
+ * roBa.dtsi にある trackball_central_listener を再利用する。
+ * 名前は trackball のままだが、実際の device は IQS7211E trackpad。
+ */
+&trackball_central_listener {
+    compatible = "zmk,input-listener";
+    status = "okay";
+    device = <&trackpad_central>;
+
+    /*
+     * 1) トラックパッドが動いたら MOUSE レイヤーを 1000ms オン
+     * 2) XY 反転を適用
+     *
+     * 向きが逆なら、下の INPUT_TRANSFORM_X_INVERT /
+     * INPUT_TRANSFORM_Y_INVERT を調整する。
+     */
+    input-processors = <
+        &zip_temp_layer MOUSE 1000
+        &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+    >;
+
+    /*
+     * レイヤー 5: 縦スクロール専用
+     */
+    scroller_vertical {
+        layers = <5>;
         input-processors = <
-            &zip_temp_layer MOUSE 1000
-            &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_x_scaler 0 1
+            &zip_scroll_scaler 1 10
         >;
+    };
 
-        /* ===== レイヤー 5: 縦スクロール専用（上下のみ） ===== */
-        scroller_vertical {
-            layers = <5>;
-            input-processors = <
-                &zip_xy_to_scroll_mapper
-                &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
-                &zip_scroll_scaler 1 10    /* 全体 1/10 でフニャ軽減 */
-            >;
-        };
-
-        /* ===== レイヤー 3: 横スクロール専用（左右のみ） ===== */
-        scroller_horizontal {
-            layers = <3>;
-            input-processors = <
-                &zip_xy_to_scroll_mapper
-                &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
-                &zip_scroll_scaler 1 10    /* 少しだけ動く横スクロール */
-            >;
-        };
+    /*
+     * レイヤー 3: 横スクロール専用
+     */
+    scroller_horizontal {
+        layers = <3>;
+        input-processors = <
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_y_scaler 0 1
+            &zip_scroll_scaler 1 10
+        >;
     };
 };
