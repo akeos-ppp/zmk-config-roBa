@@ -126,7 +126,7 @@
          * 旧 PAW3222 MOTION ピンを IQS7211E RDY に流用。
          * IQS7211E の RDY は active low。
          */
-        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        irq-gpios = <&gpio0 2 GPIO_PULL_UP>;
 
         /*
          * 旧 PAW3222 CS / P0.09 を電源制御に使う場合だけ有効化。
