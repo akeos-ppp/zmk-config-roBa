@@ -23,9 +23,9 @@ manifest:
     # - name: zmk-pmw3610-driver
     #   remote: kumamuk-git
     #   revision: main
-    - name: zmk-driver-paw3222
+    - name: zmk-driver-iqs7211e
       remote: sekigon-gonnoc
-      revision: main
+      revision: master
     - name: zmk-rgbled-widget
       remote: caksoylar
       revision: main
