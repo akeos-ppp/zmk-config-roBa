@@ -24,7 +24,7 @@ include:
  - board: seeeduino_xiao_ble
    shield: roBa_R
    snippet: zmk-usb-logging
-   cmake-args: -DEXTRA_CONF_FILE=debug.conf
+   cmake-args: -DEXTRA_CONF_FILE=${ZMK_CONFIG}/debug.conf
    artifact-name: roBa_R_debug
  - board: seeeduino_xiao_ble
    shield: roBa_L
