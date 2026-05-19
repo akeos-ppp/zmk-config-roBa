@@ -12,7 +12,25 @@ config ZMK_BLE
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
-endif
+# Right side has the IQS7211E trackpad.
+config ZMK_POINTING
+    default y
+
+config IQS7211E
+    default y
+
+endif # SHIELD_ROBA_R
+
+
+if SHIELD_ROBA_L
+
+# Keep pointing enabled on the left side as well because the shared keymap
+# contains mouse behaviors. No pointing device is defined on the left overlay.
+config ZMK_POINTING
+    default y
+
+endif # SHIELD_ROBA_L
+
 
 if SHIELD_ROBA_R || SHIELD_ROBA_L
 
@@ -25,21 +43,11 @@ config ZMK_SPLIT
 config INPUT
     default y
 
-config ZMK_POINTING
-    default y
-
-config SPI
-    default y
-
-# PAW3222光学センサー（トラックボール）
-config PAW3222
-    default y
-
-# RGB LED設定
+# RGB LED widget settings
 config RGBLED_WIDGET_BATTERY_LEVEL_HIGH
     default 30
 
 config RGBLED_WIDGET_BATTERY_LEVEL_CRITICAL
     default 10
 
-endif
+endif # SHIELD_ROBA_R || SHIELD_ROBA_L
