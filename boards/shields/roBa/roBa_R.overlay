@@ -82,8 +82,8 @@
     roba_iqs7211e_i2c0_default: roba_iqs7211e_i2c0_default {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 4)>,
-                <NRF_PSEL(TWIM_SCL, 0, 5)>;
+                <NRF_PSEL(TWIM_SDA, 0, 5)>,
+                <NRF_PSEL(TWIM_SCL, 0, 4)>;
             bias-pull-up;
         };
     };
@@ -91,8 +91,8 @@
     roba_iqs7211e_i2c0_sleep: roba_iqs7211e_i2c0_sleep {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 4)>,
-                <NRF_PSEL(TWIM_SCL, 0, 5)>;
+                <NRF_PSEL(TWIM_SDA, 0, 5)>,
+                <NRF_PSEL(TWIM_SCL, 0, 4)>;
             bias-pull-up;
             low-power-enable;
         };
@@ -111,7 +111,7 @@
     pinctrl-1 = <&roba_iqs7211e_i2c0_sleep>;
     pinctrl-names = "default", "sleep";
 
-    clock-frequency = <I2C_BITRATE_FAST>;
+    clock-frequency = <I2C_BITRATE_STANDARD>;
     zephyr,concat-buf-size = <32>;
 
     #address-cells = <1>;
@@ -123,30 +123,20 @@
         reg = <0x56>;
 
         /*
-         * 旧 PAW3222 MOTION ピンを IQS7211E RDY に流用。
-         * IQS7211E の RDY は active low。
+         * PAW3222用FPCをそのまま使う場合:
+         * PAW3222 CS / P0.09 が IQS7211E RDY に来る。
          */
-        irq-gpios = <&gpio0 2 GPIO_PULL_UP>;
+        irq-gpios = <&gpio0 9 GPIO_PULL_UP>;
 
         /*
-         * 旧 PAW3222 CS / P0.09 を電源制御に使う場合だけ有効化。
-         * IQS7211E の VDD を直接 3.3V に繋ぐならコメントアウトのままでよい。
+         * P0.09 は RDY として使うので、power-gpios には使わない。
          */
         /* power-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>; */
 
         /*
-         * 通常のトラックパッドとして使うので scroller-mode は付けない。
-         *
-         * scroller-mode を付けると、1本指移動がカーソル移動ではなく
-         * スクロール入力になる。
+         * 通常のトラックパッドとして使うので、最初は scroller-mode は付けない。
          */
         /* scroller-mode; */
-
-        /*
-         * scroller-mode 使用時だけ必要に応じて有効化。
-         */
-        /* v-invert; */
-        /* h-invert; */
     };
 };
 
