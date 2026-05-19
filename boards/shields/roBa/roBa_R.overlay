@@ -66,24 +66,12 @@
 /* ========================================
  * IQS7211E I2C PIN SETTINGS
  * ======================================== */
-
-/*
- * PAW3222 で使っていた GPIO を I2C 用に再利用。
- *
- * P0.04 = SDA
- * P0.05 = SCL
- *
- * 物理配線側も、
- * 旧 MOSI 線 → SDA
- * 旧 SCK 線  → SCL
- * に接続すること。
- */
 &pinctrl {
     roba_iqs7211e_i2c0_default: roba_iqs7211e_i2c0_default {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 5)>,
-                <NRF_PSEL(TWIM_SCL, 0, 4)>;
+                <NRF_PSEL(TWIM_SDA, 0, 4)>,    /* P0.04 = SDA */
+                <NRF_PSEL(TWIM_SCL, 0, 5)>;    /* P0.05 = SCL */
             bias-pull-up;
         };
     };
@@ -91,8 +79,8 @@
     roba_iqs7211e_i2c0_sleep: roba_iqs7211e_i2c0_sleep {
         group1 {
             psels =
-                <NRF_PSEL(TWIM_SDA, 0, 5)>,
-                <NRF_PSEL(TWIM_SCL, 0, 4)>;
+                <NRF_PSEL(TWIM_SDA, 0, 4)>,
+                <NRF_PSEL(TWIM_SCL, 0, 5)>;
             bias-pull-up;
             low-power-enable;
         };
@@ -102,41 +90,22 @@
 /* ========================================
  * IQS7211E TRACKPAD
  * ======================================== */
-
 &i2c0 {
     status = "okay";
     compatible = "nordic,nrf-twim";
-
     pinctrl-0 = <&roba_iqs7211e_i2c0_default>;
     pinctrl-1 = <&roba_iqs7211e_i2c0_sleep>;
     pinctrl-names = "default", "sleep";
-
-    clock-frequency = <I2C_BITRATE_STANDARD>;
+    clock-frequency = <I2C_BITRATE_FAST>;     /* 400kHz */
     zephyr,concat-buf-size = <32>;
-
-    #address-cells = <1>;
-    #size-cells = <0>;
 
     trackpad_central: trackpad@56 {
         status = "okay";
         compatible = "azoteq,iqs7211e";
         reg = <0x56>;
 
-        /*
-         * PAW3222用FPCをそのまま使う場合:
-         * PAW3222 CS / P0.09 が IQS7211E RDY に来る。
-         */
-        irq-gpios = <&gpio0 9 GPIO_PULL_UP>;
-
-        /*
-         * P0.09 は RDY として使うので、power-gpios には使わない。
-         */
-        /* power-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>; */
-
-        /*
-         * 通常のトラックパッドとして使うので、最初は scroller-mode は付けない。
-         */
-        /* scroller-mode; */
+        /* RDY = 元 MOTION 線 = P0.02 */
+        irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
 };
 
