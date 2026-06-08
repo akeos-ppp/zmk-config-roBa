@@ -1,10 +1,14 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+# ========================================
+# RIGHT SIDE - CENTRAL
+# ========================================
+
 if SHIELD_ROBA_R
 
 config ZMK_KEYBOARD_NAME
-    default "roBa"
+    default "roBaish"
 
 config ZMK_BLE
     default y
@@ -12,7 +16,42 @@ config ZMK_BLE
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
-endif
+# PAW3222 trackball is mounted on the right side.
+config ZMK_POINTING
+    default y
+
+config INPUT
+    default y
+
+config SPI
+    default y
+
+config PAW3222
+    default y
+
+endif # SHIELD_ROBA_R
+
+
+# ========================================
+# LEFT SIDE - PERIPHERAL
+# ========================================
+
+if SHIELD_ROBA_L
+
+# Keep pointing enabled so shared keymap mouse behaviors can build cleanly.
+# No physical pointing sensor is enabled on the left side.
+config ZMK_POINTING
+    default y
+
+config INPUT
+    default y
+
+endif # SHIELD_ROBA_L
+
+
+# ========================================
+# COMMON SETTINGS
+# ========================================
 
 if SHIELD_ROBA_R || SHIELD_ROBA_L
 
@@ -22,24 +61,11 @@ config NFCT_PINS_AS_GPIOS
 config ZMK_SPLIT
     default y
 
-config INPUT
-    default y
-
-config ZMK_POINTING
-    default y
-
-config SPI
-    default y
-
-# PAW3222光学センサー（トラックボール）
-config PAW3222
-    default y
-
-# RGB LED設定
+# RGB LED settings
 config RGBLED_WIDGET_BATTERY_LEVEL_HIGH
     default 30
 
 config RGBLED_WIDGET_BATTERY_LEVEL_CRITICAL
     default 10
 
-endif
+endif # SHIELD_ROBA_R || SHIELD_ROBA_L
