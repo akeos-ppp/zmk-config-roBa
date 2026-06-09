@@ -16,7 +16,7 @@
         , <&xiao_d 8 GPIO_ACTIVE_HIGH>
         , <&xiao_d 7 GPIO_ACTIVE_HIGH>
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
-    ;
+        ;
 };
 
 &pinctrl {
@@ -83,6 +83,7 @@
 
         input-processors = <
             &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+            &zip_temp_layer MOUSE 300
         >;
 
         scroller_vertical {
