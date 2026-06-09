@@ -17,14 +17,6 @@
     quick-tap-ms = <0>;
 };
 
-/* --- マウスキーでタイムアウト延長 --- */
-
-&mkp_input_listener { input-processors = <&zip_temp_layer MOUSE 1000>; };
-
-&mt {
-    flavor = "balanced";
-    quick-tap-ms = <0>;
-};
 
 / {
     combos {
