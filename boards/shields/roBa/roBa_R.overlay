@@ -15,11 +15,11 @@
 &kscan0 {
     col-gpios
         = <&xiao_d 10 GPIO_ACTIVE_HIGH>
-        , <&xiao_d  9 GPIO_ACTIVE_HIGH>
-        , <&xiao_d  8 GPIO_ACTIVE_HIGH>
-        , <&xiao_d  7 GPIO_ACTIVE_HIGH>
-        , <&gpio0  10 GPIO_ACTIVE_HIGH>
-        ;
+        , <&xiao_d 9 GPIO_ACTIVE_HIGH>
+        , <&xiao_d 8 GPIO_ACTIVE_HIGH>
+        , <&xiao_d 7 GPIO_ACTIVE_HIGH>
+        , <&gpio0 10 GPIO_ACTIVE_HIGH>
+    ;
 };
 
 /* --- SPI ピン設定（PAW3222 用） --- */
@@ -27,7 +27,7 @@
     spi0_default: spi0_default {
         group1 {
             psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                <NRF_PSEL(SPIM_SCK, 0, 5)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
         };
@@ -36,7 +36,7 @@
     spi0_sleep: spi0_sleep {
         group1 {
             psels =
-                <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                <NRF_PSEL(SPIM_SCK, 0, 5)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 4)>,
                 <NRF_PSEL(SPIM_MISO, 0, 4)>;
             low-power-enable;
@@ -74,14 +74,14 @@
 /* --- zip_temp_layer の設定（AML解除条件など） --- */
 &zip_temp_layer {
     /*
-     * まずはマウスボタン系だけ残す。
+     * マウスボタン系のみ除外。
      * 通常キーを押したらMOUSEレイヤーから抜けるようにする。
+     * require-prior-idle-ms を削除してキー入力で即座に抜けられるようにした。
      */
     excluded-positions = <7 18 19 20>;
-    require-prior-idle-ms = <300>;
 };
 /* --- Input Processor 定義 + トラックボール Listener --- */
- / {
+/ {
     /* ここで input_processors ノードを拡張（または新規作成） */
     input_processors {
         /* 水平スクロール用スケーラー（X方向） */
@@ -123,8 +123,8 @@
             layers = <5>;
             input-processors = <
                 &zip_xy_to_scroll_mapper
-                &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
-                &zip_scroll_scaler 1 10    /* 全体 1/10 でフニャ軽減 */
+                &zip_scroll_x_scaler 0 1  /* X = 0倍 → 横スクロール殺す */
+                &zip_scroll_scaler 1 10   /* 全体 1/10 でフニャ軽減 */
             >;
         };
 
@@ -133,8 +133,8 @@
             layers = <3>;
             input-processors = <
                 &zip_xy_to_scroll_mapper
-                &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
-                &zip_scroll_scaler 1 10    /* 少しだけ動く横スクロール */
+                &zip_scroll_y_scaler 0 1  /* Y = 0倍 → 縦スクロール殺す */
+                &zip_scroll_scaler 1 10   /* 少しだけ動く横スクロール */
             >;
         };
     };
