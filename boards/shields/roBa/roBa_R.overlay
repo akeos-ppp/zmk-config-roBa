@@ -73,11 +73,13 @@
 
 /* --- zip_temp_layer の設定（AML解除条件など） --- */
 &zip_temp_layer {
-    /* AMLを解除したいキー位置（レイヤー0のposition番号）をまとめて<>で指定 */
-    excluded-positions = <7 16 18 19 20 22 31 32 33>;
-    require-prior-idle-ms = <200>;
+    /*
+     * まずはマウスボタン系だけ残す。
+     * 通常キーを押したらMOUSEレイヤーから抜けるようにする。
+     */
+    excluded-positions = <7 18 19 20>;
+    require-prior-idle-ms = <300>;
 };
-
 /* --- Input Processor 定義 + トラックボール Listener --- */
  / {
     /* ここで input_processors ノードを拡張（または新規作成） */
