@@ -3,6 +3,9 @@
 #include <dt-bindings/zmk/input_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
+/* トラックパッドの取り付け向き補正（180度回転 = X・Y とも反転） */
+#define TRACKPAD_FLIP (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+
 /* --- 右手側の列オフセット --- */
 &default_transform {
     col-offset = <6>;
@@ -95,18 +98,24 @@
         device = <&trackpad>;
 
         /*
-         * 1) トラックパッドに触れたら MOUSE レイヤー (4) を 1000ms オン
-         * 2) 向きが逆なら下の XY 反転を有効にする
+         * トラックパッドを上下逆（180度回転）に取り付けているため、
+         * カーソル (REL_X/Y) と2本指スクロール (WHEEL/HWHEEL) の両方を反転する。
+         * 上下だけが逆の場合は TRACKPAD_FLIP から INPUT_TRANSFORM_X_INVERT を外す。
+         * 1) 触れたら MOUSE レイヤー (4) を 1000ms オン
+         * 2) カーソル反転  3) 2本指スクロール反転
          */
         input-processors = <
             &zip_temp_layer 4 1000
-            /* &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT) */
+            &zip_xy_transform TRACKPAD_FLIP
+            &zip_scroll_transform TRACKPAD_FLIP
         >;
 
         /* ===== レイヤー 5: 縦スクロール専用（上下のみ） ===== */
         scroller_vertical {
             layers = <5>;
             input-processors = <
+                &zip_scroll_transform TRACKPAD_FLIP  /* 2本指スクロールの反転（mapper より前） */
+                &zip_xy_transform TRACKPAD_FLIP      /* 1本指移動の反転 */
                 &zip_xy_to_scroll_mapper
                 &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
                 &zip_scroll_scaler 1 10    /* 全体 1/10 でフニャ軽減 */
@@ -117,6 +126,8 @@
         scroller_horizontal {
             layers = <3>;
             input-processors = <
+                &zip_scroll_transform TRACKPAD_FLIP  /* 2本指スクロールの反転（mapper より前） */
+                &zip_xy_transform TRACKPAD_FLIP      /* 1本指移動の反転 */
                 &zip_xy_to_scroll_mapper
                 &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
                 &zip_scroll_scaler 1 10    /* 少しだけ動く横スクロール */
