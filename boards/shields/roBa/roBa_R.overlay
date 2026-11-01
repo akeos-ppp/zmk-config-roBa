@@ -98,23 +98,22 @@
         device = <&trackpad>;
 
         /*
-         * トラックパッドを上下逆（180度回転）に取り付けているため、
-         * カーソル (REL_X/Y) と2本指スクロール (WHEEL/HWHEEL) の両方を反転する。
-         * 上下だけが逆の場合は TRACKPAD_FLIP から INPUT_TRANSFORM_X_INVERT を外す。
+         * トラックパッドを上下逆（180度回転）に取り付けているため、カーソル (REL_X/Y) を反転する。
+         * 2本指スクロールは反転しない（実機確認で反転すると逆になったため）。
          * 1) 触れたら MOUSE レイヤー (4) を 1000ms オン
-         * 2) カーソル反転  3) 2本指スクロール反転
+         * 2) カーソル反転
+         * 3) 2本指スクロールを 2 倍（遅い場合は 3 1、速すぎる場合は 1 1 に戻す）
          */
         input-processors = <
             &zip_temp_layer 4 1000
             &zip_xy_transform TRACKPAD_FLIP
-            &zip_scroll_transform TRACKPAD_FLIP
+            &zip_scroll_scaler 2 1
         >;
 
         /* ===== レイヤー 5: 縦スクロール専用（上下のみ） ===== */
         scroller_vertical {
             layers = <5>;
             input-processors = <
-                &zip_scroll_transform TRACKPAD_FLIP  /* 2本指スクロールの反転（mapper より前） */
                 &zip_xy_transform TRACKPAD_FLIP      /* 1本指移動の反転 */
                 &zip_xy_to_scroll_mapper
                 &zip_scroll_x_scaler 0 1   /* X = 0倍 → 横スクロール殺す */
@@ -126,7 +125,6 @@
         scroller_horizontal {
             layers = <3>;
             input-processors = <
-                &zip_scroll_transform TRACKPAD_FLIP  /* 2本指スクロールの反転（mapper より前） */
                 &zip_xy_transform TRACKPAD_FLIP      /* 1本指移動の反転 */
                 &zip_xy_to_scroll_mapper
                 &zip_scroll_y_scaler 0 1   /* Y = 0倍 → 縦スクロール殺す */
